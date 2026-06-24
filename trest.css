@@ -104,3 +104,10 @@ footer .links a:hover{color:var(--accent)}
   .intro{font-size:19px}
   .item h2,.item.lead h2{font-size:21px}
 }
+
+/* language toggle (EN/RU) */
+.top .row{display:flex;align-items:center;justify-content:space-between}
+.t-lang{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.06em;
+  background:transparent;border:1px solid rgba(23,21,15,.22);border-radius:999px;padding:6px 12px;
+  cursor:pointer;color:#17150f;transition:.18s}
+.t-lang:hover{background:#17150f;color:#f4f2ec;border-color:#17150f}

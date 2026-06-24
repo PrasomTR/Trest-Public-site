@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tasqyn, how it was built</title>
+<meta name="description" content="The story behind Tasqyn: why I built a month-ahead flood predictor for Kazakhstan's rivers, where the data comes from, the stack, how the forecast works, and the mistakes I made along the way." />
+<link rel="icon" href="../assets/icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+</head>
+<body class="apppage-body">
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Tasqyn">
+      <svg class="logo" viewBox="0 0 178 36" role="img" aria-label="Tasqyn">
+        <defs><linearGradient id="lgm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient></defs>
+        <rect x="2" y="3" width="30" height="30" rx="9" fill="url(#lgm)"/>
+        <path d="M8.5 21 q4.5 -6.5 9 0 q4.5 6.5 9 0" stroke="#eaf7ff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M8.5 15.5 q4.5 -6.5 9 0 q4.5 6.5 9 0" stroke="#bfe6fb" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"/>
+        <text x="43" y="26" class="wordmark" fill="currentColor">Tasqyn</text>
+      </svg>
+    </a>
+    <div class="navlinks">
+      <a href="../#model" data-en="Model" data-kk="Модель">Модель</a>
+      <a href="../#results" data-en="Results" data-kk="Нәтижелер">Результаты</a>
+      <a href="../forecast/" data-en="Forecast" data-kk="Болжам">Прогноз</a>
+      <a href="../mobile/" data-en="App" data-kk="Қосымша">Приложение</a>
+      <a href="../docs/" data-en="Docs">Документация</a>
+      <a href="../technology/" data-en="Technology" data-kk="Технология">Технологии</a>
+      <span class="lang-select" id="langSelect"></span>
+    </div>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="story">
+  <header class="story-hero reveal">
+    <div class="kicker" data-en="How it was built" data-kk="Қалай жасалды">Как это сделано</div>
+    <h1 data-en="How I built Tasqyn" data-kk="Tasqyn-ды қалай жасадым">Как я делал Tasqyn</h1>
+    <p class="dek" data-en="The honest story: why I started, where the data comes from, the stack I used, how the forecast actually works, and the mistakes I had to fix." data-kk="Шынайы әңгіме: неге бастадым, деректер қайдан алынады, қандай стек қолдандым, болжам шын мәнінде қалай жұмыс істейді және қандай қателерді түзедім.">Честно, как всё было: почему я начал, откуда данные, какой стек, как на самом деле работает прогноз и какие ошибки пришлось чинить.</p>
+  </header>
+
+  <section class="reveal">
+    <p class="lede-p" data-en="In the spring of 2025 I watched Petropavl get badly flooded again. I figured the worst part was the surprise, and that the water level had been hinting at it for months. So I sat down and built a predictor. I did all of it myself, end to end." data-kk="2025 жылдың көктемінде Петропавл тағы да қатты су астында қалды. Ең жаманы, бәрінің кенеттен болуы еді, ал су деңгейі мұны бірнеше ай бұрын меңзеп тұрған. Сонда мен отырып, болжаушы жасадым. Бәрін өзім, басынан аяғына дейін жасадым.">Весной 2025 года я снова смотрел, как Петропавл сильно топит. И понял, что хуже всего, внезапность, хотя вода намекала на это за месяцы. Тогда я сел и сделал предсказатель. Всё от начала до конца сделал сам.</p>
+  </section>
+
+  <section class="reveal">
+    <h2 data-en="Where the data comes from" data-kk="Деректер қайдан алынады">Откуда данные</h2>
+    <p data-en="I started by learning how real monitoring is done, USGS Water Data showed me how gauges, streamflow and percentiles are handled properly. For weather I pulled the ERA5 reanalysis from Open-Meteo (snow cover, temperature, soil moisture), which is free and needs no key. The backbone is a local monthly record of the Ishim (Esil) level at Petropavl from 1995 to 2022." data-kk="Алдымен нақты мониторинг қалай жасалатынын үйрендім, USGS Water Data маған гидропосттар, ағын және перцентильдер қалай дұрыс өңделетінін көрсетті. Ауа райы үшін Open-Meteo-дан ERA5 реанализін алдым (қар жамылғысы, температура, топырақ ылғалдылығы), ол тегін әрі кілт қажет етпейді. Негізі, Петропавлдағы Есіл деңгейінің 1995–2022 жылдардағы жергілікті айлық қатары.">Сначала я разобрался, как устроен настоящий мониторинг, на USGS Water Data увидел, как грамотно работают с гидропостами, стоком и перцентилями. Погоду брал из реанализа ERA5 через Open-Meteo (снежный покров, температура, влажность почвы), это бесплатно и без ключа. Основа всего, локальный месячный ряд уровня Ишима (Есиля) у Петропавла с 1995 по 2022 год.</p>
+  </section>
+
+  <section class="reveal">
+    <h2 data-en="The stack" data-kk="Стек">Стек</h2>
+    <ul>
+      <li data-en="<b>Python</b> for everything, pandas for the data, a clean <span class='mono'>src/</span> pipeline (load → features → model → evaluate)." data-kk="<b>Python</b> бәріне, деректер үшін pandas, таза <span class='mono'>src/</span> құбыры (жүктеу → белгілер → модель → бағалау)."><b>Python</b> на всё, pandas для данных, аккуратный пайплайн <span class="mono">src/</span> (загрузка → признаки → модель → оценка).</li>
+      <li data-en="<b>XGBoost + scikit-learn</b>, a gradient-boosted tree model with 47 leakage-free features." data-kk="<b>XGBoost + scikit-learn</b>, 47 ағынсыз белгісі бар градиенттік бустинг ағаш моделі."><b>XGBoost + scikit-learn</b>, модель на градиентном бустинге с 47 признаками без утечек.</li>
+      <li data-en="<b>FastAPI</b> serves the model; the same feature code is used for training and serving." data-kk="<b>FastAPI</b> модельді ұсынады; оқыту мен қызмет көрсетуде бірдей белгілер коды қолданылады."><b>FastAPI</b> отдаёт модель; один и тот же код признаков работает и при обучении, и в API.</li>
+      <li data-en="<b>Expo / React Native</b> for the phone app, <b>Docker</b> and CI to keep it reproducible." data-kk="Телефон қосымшасына <b>Expo / React Native</b>, қайталанатын болуы үшін <b>Docker</b> және CI."><b>Expo / React Native</b> для приложения, <b>Docker</b> и CI, чтобы всё воспроизводилось.</li>
+    </ul>
+  </section>
+
+  <section class="reveal">
+    <h2 data-en="How the forecast works" data-kk="Болжам қалай жұмыс істейді">Как работает прогноз</h2>
+    <p data-en="Each month becomes a row of features: recent levels, temperature, and snow, with lags and rolling windows. The model returns a probability of flooding, which I then calibrate so a stated 70% really means roughly 70%. A 15-model bootstrap adds a confidence interval. The single strongest signal it found is the snow that fell about four months earlier." data-kk="Әр ай белгілер жолына айналады: соңғы деңгейлер, температура және қар, лагтармен әрі жылжымалы терезелермен. Модель су тасу ықтималдығын береді, мен оны калибрлеймін, сонда айтылған 70% шамамен 70% дегенді білдіреді. 15 модельден тұратын бутстрап сенімділік аралығын қосады. Ең күшті сигнал, шамамен төрт ай бұрын жауған қар.">Каждый месяц превращается в строку признаков: недавние уровни, температура и снег, с лагами и скользящими окнами. Модель выдаёт вероятность паводка, которую я калибрую, чтобы заявленные 70% и правда означали примерно 70%. Бутстрап из 15 моделей добавляет доверительный интервал. Самый сильный сигнал, который она нашла, снег, выпавший примерно за четыре месяца до паводка.</p>
+  </section>
+
+  <section class="reveal">
+    <h2 data-en="Why this approach" data-kk="Неге осылай">Почему именно так</h2>
+    <p data-en="Snowmelt is a slow, months-ahead signal, so a month-ahead forecast is physically reasonable. With only a few hundred months of data, a gradient-boosted tree beats a deep network, it handles small tabular data and non-linear effects without overfitting as easily. And I cared more about honest validation than a flashy architecture." data-kk="Қар еруі, баяу, бірнеше ай бұрын білінетін сигнал, сондықтан бір ай алдын болжау физикалық тұрғыдан орынды. Деректер бар болғаны бірнеше жүз ай болғандықтан, градиенттік бустинг ағашы терең желіден артық, ол кішкентай кестелік деректермен және сызықты емес әсерлермен оңай артық оқымай жұмыс істейді. Әрі маған әсем архитектурадан гөрі шынайы тексеру маңыздырақ болды.">Снеготаяние, медленный сигнал, который виден за месяцы, поэтому прогноз на месяц вперёд физически оправдан. Когда данных всего несколько сотен месяцев, дерево на бустинге обыгрывает глубокую сеть, оно тянет маленькие табличные данные и нелинейности и не так легко переобучается. И мне была важнее честная проверка, чем красивая архитектура.</p>
+  </section>
+
+  <section class="reveal">
+    <h2 data-en="What went wrong (and got fixed)" data-kk="Не дұрыс болмады (және түзелді)">Что шло не так (и было исправлено)</h2>
+    <ul>
+      <li data-en="<b>Data leakage.</b> My first rolling windows let a month peek at itself. The score looked amazing and was a lie. I shifted every window by a month and locked it with a test." data-kk="<b>Дерек ағуы.</b> Алғашқы жылжымалы терезелерім айдың өзіне қарауына жол берді. Нәтиже керемет көрінді, бірақ ол өтірік еді. Әр терезені бір айға жылжытып, тестпен бекіттім."><b>Утечка данных.</b> Первые скользящие окна позволяли месяцу подсматривать сам себя. Метрика выглядела отлично и была враньём. Я сдвинул каждое окно на месяц и закрепил это тестом.</li>
+      <li data-en="<b>The perfect score trap.</b> A naive split gave ROC-AUC 1.00. Instead of celebrating, I threw it out and switched to leave-one-year-out walk-forward, which gives an honest 0.91." data-kk="<b>Мінсіз нәтиже тұзағы.</b> Аңғал бөлу ROC-AUC 1.00 берді. Қуанудың орнына оны алып тастап, leave-one-year-out walk-forward әдісіне көштім, ол шынайы 0.91 береді."><b>Ловушка идеального результата.</b> Наивный сплит дал ROC-AUC 1.00. Вместо того чтобы радоваться, я его выбросил и перешёл на leave-one-year-out walk-forward, он даёт честные 0.91.</li>
+      <li data-en="<b>A units bug.</b> Live soil moisture came in ×100 off training. I caught it by comparing live inputs to the training ranges and fixed the scale." data-kk="<b>Бірлік қатесі.</b> Тікелей топырақ ылғалдылығы оқытудан ×100 айырмашылықпен келді. Тікелей кірісті оқыту ауқымдарымен салыстырып тауып, масштабты түзедім."><b>Баг с единицами.</b> Живая влажность почвы приходила в ×100 от обучающей. Я поймал это, сравнив живые входы с обучающими диапазонами, и поправил масштаб.</li>
+      <li data-en="<b>Honest limits.</b> The positive class is tiny and only Petropavl has a full local record, so other basins are scored by transfer and clearly marked as indicative." data-kk="<b>Шынайы шектеулер.</b> Оң класс өте аз әрі толық жергілікті қатар тек Петропавлда бар, сондықтан басқа бассейндер тасымалмен бағаланып, бағдарлы деп анық белгіленеді."><b>Честные ограничения.</b> Положительный класс крошечный, и полный локальный ряд есть только по Петропавлу, поэтому другие бассейны оцениваются переносом и явно помечены как ориентировочные.</li>
+    </ul>
+  </section>
+
+  <section class="reveal">
+    <p class="lede-p" data-en="It is still entirely my project, the data work, the model, the API, the app and these pages. Tasqyn is the first thing my studio, Trest, is putting out." data-kk="Бұл әлі де толықтай менің жобам, деректер жұмысы, модель, API, қосымша және осы беттер. Tasqyn, менің Trest студиямның алғашқы шығарған дүниесі.">Это по-прежнему полностью мой проект, работа с данными, модель, API, приложение и эти страницы. Tasqyn, первое, что выпускает моя студия Trest.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand foot">
+      <svg class="logo" viewBox="0 0 178 36" role="img" aria-label="Tasqyn">
+        <defs><linearGradient id="lgmf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient></defs>
+        <rect x="2" y="3" width="30" height="30" rx="9" fill="url(#lgmf)"/>
+        <path d="M8.5 21 q4.5 -6.5 9 0 q4.5 6.5 9 0" stroke="#eaf7ff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M8.5 15.5 q4.5 -6.5 9 0 q4.5 6.5 9 0" stroke="#bfe6fb" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"/>
+        <text x="43" y="26" class="wordmark" fill="currentColor">Tasqyn</text>
+      </svg>
+    </div>
+    <div class="tagline" data-en="Flood forecasting for the people who live along these rivers." data-kk="Осы өзендердің бойында тұратын адамдар үшін су тасу болжамы.">Прогноз паводков для людей, живущих вдоль этих рек.</div>
+    <div class="meta" data-en="FloodCast · flood-forecasting model · Ishim (Esil) river basin" data-kk="FloodCast · су тасу болжау моделі · Есіл өзені алабы">FloodCast · модель прогноза паводков · бассейн реки Ишим (Есиль)</div>
+  </div>
+</footer>
+
+<script src="../lang.js"></script>
+</body>
+</html>

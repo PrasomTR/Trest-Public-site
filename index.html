@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Trest</title>
-<meta name="description" content="Trest is an applied-AI studio building decision tools from real, local data. Latest: Tasqyn — month-ahead flood forecasting for Kazakhstan's rivers — is live." />
+<meta name="description" content="Trest is an applied-AI studio building decision tools from real, local data. Latest: Tasqyn, month-ahead flood forecasting for Kazakhstan's rivers, is live." />
 <link rel="icon" href="assets/trest-mark.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,7 +13,6 @@
 </head>
 <body>
 
-<!-- header: just the wordmark, top-left -->
 <header class="top">
   <div class="row">
     <a class="wordmark" href="/" aria-label="Trest">
@@ -25,44 +24,44 @@
       </svg>
       <span class="wm-text">Trest</span>
     </a>
+    <button id="trestLang" class="t-lang" type="button" aria-label="Язык / Language">RU</button>
   </div>
 </header>
 
 <main>
-  <p class="intro rv">An applied-AI studio. <span class="q">We build decision tools from real data — and publish the honest numbers.</span></p>
+  <p class="intro rv"><span data-ru="Студия прикладного ИИ.">An applied-AI studio.</span> <span class="q" data-ru="Мы делаем инструменты для решений на реальных данных и публикуем честные цифры.">We build decision tools from real data and publish the honest numbers.</span></p>
 
-  <div class="label rv">Newsroom</div>
+  <div class="label rv" data-ru="Новости">Newsroom</div>
 
   <div class="news">
 
-    <!-- lead: Tasqyn release -->
     <article class="item lead link rv" data-href="tasqyn/">
-      <div class="meta"><span class="rel">Release</span> · <span class="k">June 2026</span></div>
-      <h2>Tasqyn is live: flood probability a month ahead for Kazakhstan's rivers</h2>
-      <p>Our first product reads the snow that fell months ago and estimates the probability of spring
-        flooding for six river basins — calibrated, with confidence intervals, through an API and a mobile
+      <div class="meta"><span class="rel" data-ru="Релиз">Release</span> · <span class="k" data-ru="июнь 2026">June 2026</span></div>
+      <h2 data-ru="Tasqyn запущен: вероятность паводка на месяц вперёд для рек Казахстана">Tasqyn is live: flood probability a month ahead for Kazakhstan's rivers</h2>
+      <p data-ru="Наш первый продукт читает снег, выпавший месяцы назад, и оценивает вероятность весеннего паводка для шести речных бассейнов: с калибровкой и доверительными интервалами, через API и мобильное приложение. Обучен на 30 годах наблюдений и проверен честно.">Our first product reads the snow that fell months ago and estimates the probability of spring
+        flooding for six river basins, calibrated, with confidence intervals, through an API and a mobile
         app. Trained on 30 years of observations and scored the honest way.</p>
-      <a class="more" href="tasqyn/">Open Tasqyn <span class="arr">→</span></a>
+      <a class="more" href="tasqyn/" data-ru="Открыть Tasqyn →">Open Tasqyn <span class="arr">→</span></a>
     </article>
 
-    <article class="item link rv" data-href="tasqyn/docs.html">
-      <div class="meta"><span class="rel">Release</span> · <span class="k">June 2026</span></div>
-      <h3>Tasqyn API, v1.1 — live forecasting from open weather</h3>
-      <p>One call returns the next few months of flood probability for a basin, fetching live weather for
+    <article class="item link rv" data-href="tasqyn/docs/">
+      <div class="meta"><span class="rel" data-ru="Релиз">Release</span> · <span class="k" data-ru="июнь 2026">June 2026</span></div>
+      <h3 data-ru="Tasqyn API, v1.1: живой прогноз по открытой погоде">Tasqyn API, v1.1, live forecasting from open weather</h3>
+      <p data-ru="Один запрос возвращает вероятность паводка на ближайшие месяцы для бассейна и сам подтягивает живую погоду. Шесть бассейнов, горизонт от одного до шести месяцев.">One call returns the next few months of flood probability for a basin, fetching live weather for
         you. Six basins, a one-to-six month horizon.</p>
     </article>
 
-    <article class="item link rv" data-href="tasqyn/index.html#model">
-      <div class="meta"><span class="k">Note</span> · <span class="k">May 2026</span></div>
-      <h3>On honest evaluation</h3>
-      <p>A naive split made the model look perfect. We threw that number out and report the walk-forward
-        score instead — the one we'd actually defend.</p>
+    <article class="item link rv" data-href="tasqyn/#model">
+      <div class="meta"><span class="k" data-ru="Заметка">Note</span> · <span class="k" data-ru="май 2026">May 2026</span></div>
+      <h3 data-ru="О честной оценке">On honest evaluation</h3>
+      <p data-ru="Наивный сплит сделал модель идеальной на вид. Мы выбросили эту цифру и приводим walk-forward результат, тот, который готовы защищать.">A naive split made the model look perfect. We threw that number out and report the walk-forward
+        score instead, the one we'd actually defend.</p>
     </article>
 
     <article class="item rv">
-      <div class="meta"><span class="k">Note</span> · <span class="k">May 2026</span></div>
-      <h3>Why Trest exists</h3>
-      <p>One rule: build tools from real, local data, and ship the number you'd stand behind — not the one
+      <div class="meta"><span class="k" data-ru="Заметка">Note</span> · <span class="k" data-ru="май 2026">May 2026</span></div>
+      <h3 data-ru="Зачем нужен Trest">Why Trest exists</h3>
+      <p data-ru="Одно правило: делать инструменты на реальных локальных данных и показывать цифру, за которую не стыдно, а не ту, что красивее на слайде.">One rule: build tools from real, local data, and ship the number you'd stand behind, not the one
         that looks best on a slide.</p>
     </article>
 
@@ -70,10 +69,10 @@
 </main>
 
 <footer>
-  <span class="who">Trest — applied-AI studio · © 2026</span>
+  <span class="who" data-ru="Trest · студия прикладного ИИ · © 2026">Trest, applied-AI studio · © 2026</span>
   <span class="links">
     <a href="tasqyn/">Tasqyn</a>
-    <a href="tasqyn/docs.html">API docs</a>
+    <a href="tasqyn/docs/" data-ru="API">API docs</a>
   </span>
 </footer>
 

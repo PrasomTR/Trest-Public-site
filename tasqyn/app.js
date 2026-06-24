@@ -9,12 +9,12 @@
   const SVGNS = 'http://www.w3.org/2000/svg';
 
   // ---------------------------------------------------------------- i18n
-  let LANG = 'ru';
+  // Language is chosen by the shared lang.js (EN default, then RU / KK).
+  let LANG = (window.TASQYN_LANG === 'ru' || window.TASQYN_LANG === 'kk') ? window.TASQYN_LANG : 'en';
   const I18N = {
     ru: {
       mean: 'средний уровень', max: 'макс. уровень', cm: 'см',
       seasonNorm: 'Сезонная норма уровня (опорный ряд)', updated: 'обновлено',
-      anchor: 'ОПОРНАЯ', fullHydro: 'Полный гидрограф 1995–2022 →',
       levelWord: 'уровень', kz: 'Казахстан', rus: 'Россия',
       statusLevel: { normal: 'Норма', elevated: 'Повышенный', high: 'Высокий', low: 'Низкий' },
       chartMeta: (n, a, b, fc) => `${n} мес. · ${a}–${b} · пики выше порога в ${fc} годах`,
@@ -23,14 +23,21 @@
     en: {
       mean: 'mean level', max: 'max level', cm: 'cm',
       seasonNorm: 'Seasonal level norm (anchor record)', updated: 'updated',
-      anchor: 'ANCHOR', fullHydro: 'Full hydrograph 1995–2022 →',
       levelWord: 'level', kz: 'Kazakhstan', rus: 'Russia',
       statusLevel: { normal: 'Normal', elevated: 'Elevated', high: 'High', low: 'Low' },
       chartMeta: (n, a, b, fc) => `${n} months · ${a}–${b} · peaks above threshold in ${fc} years`,
       months: ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     },
+    kk: {
+      mean: 'орташа деңгей', max: 'макс. деңгей', cm: 'см',
+      seasonNorm: 'Маусымдық деңгей нормасы (тірек қатары)', updated: 'жаңартылды',
+      levelWord: 'деңгей', kz: 'Қазақстан', rus: 'Ресей',
+      statusLevel: { normal: 'Қалыпты', elevated: 'Жоғарылаған', high: 'Жоғары', low: 'Төмен' },
+      chartMeta: (n, a, b, fc) => `${n} ай · ${a}–${b} · табалдырықтан асқан шыңдар ${fc} жылда`,
+      months: ['', 'қаң', 'ақп', 'нау', 'сәу', 'мам', 'мау', 'шіл', 'там', 'қыр', 'қаз', 'қар', 'жел'],
+    },
   };
-  const T = () => I18N[LANG];
+  const T = () => I18N[LANG] || I18N.en;
 
   const el = (t, a = {}, p) => {
     const n = document.createElementNS(SVGNS, t);
@@ -40,14 +47,7 @@
   };
   const STC = { normal: '#2e9e6b', elevated: '#e0a020', high: '#d2452c', low: '#7f9bab' };
 
-  // swap all static [data-en] nodes between RU (stored) and EN
-  function applyStatic() {
-    document.querySelectorAll('[data-en]').forEach((n) => {
-      if (n.dataset.ru === undefined) n.dataset.ru = n.innerHTML;
-      n.innerHTML = LANG === 'en' ? n.dataset.en : n.dataset.ru;
-    });
-    document.documentElement.lang = LANG;
-  }
+  // Static [data-en]/[data-kk] nodes and the language selector are handled by lang.js.
 
   // ---------------------------------------------------------------- summary
   set('kStations', meta.n_stations);
@@ -300,41 +300,11 @@
     bo.observe(barWrap);
   }
 
-  // ---------------------------------------------------------------- language toggle
-  const langBtn = document.getElementById('langToggle');
-  function setLang(l) {
-    LANG = l;
-    try { localStorage.setItem('tasqyn-lang', l); } catch (e) { /* ignore */ }
-    applyStatic();
-    if (langBtn) langBtn.textContent = LANG === 'ru' ? 'EN' : 'RU';
-    selectStation(selectedId || (anchor ? anchor.id : stations[0].id));
-    if (SERIES.length) drawChart();
-    showFig(curFig);
-  }
-  langBtn?.addEventListener('click', () => setLang(LANG === 'ru' ? 'en' : 'ru'));
-
-  // ---------------------------------------------------------------- mobile menu
-  const burger = document.getElementById('navBurger');
-  const links = document.querySelector('.navlinks');
-  if (burger && links) {
-    burger.addEventListener('click', () => {
-      const open = links.classList.toggle('open');
-      burger.classList.toggle('open', open);
-      burger.setAttribute('aria-expanded', open);
-    });
-    links.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
-      links.classList.remove('open');
-      burger.classList.remove('open');
-    }));
-  }
-
   // ---------------------------------------------------------------- init
+  // Dynamic content is rendered once in the active language. Switching language
+  // reloads the page (handled by lang.js), so no in-place re-render is needed.
   if (SERIES.length) drawChart();
   selectStation(anchor ? anchor.id : stations[0].id);
-  // Default language is English; honour a stored 'ru' preference.
-  let startLang = 'en';
-  try { if (localStorage.getItem('tasqyn-lang') === 'ru') startLang = 'ru'; } catch (e) { /* ignore */ }
-  setLang(startLang);
 
   document.querySelectorAll('.prose, .facts, .chart-card, .map-panel, .detail, .flood-stat, .verdict, .signal, .gallery, .phone, .unified')
     .forEach((n) => n.classList.add('reveal'));

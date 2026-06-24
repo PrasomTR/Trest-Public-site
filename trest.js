@@ -27,3 +27,25 @@
     });
   });
 })();
+
+// EN/RU language toggle for Trest only (English base; data-ru holds Russian).
+(function () {
+  'use strict';
+  var LANG = 'en';
+  try { if (localStorage.getItem('trest-lang') === 'ru') LANG = 'ru'; } catch (e) {}
+  function apply() {
+    document.querySelectorAll('[data-ru]').forEach(function (n) {
+      if (n.dataset.en === undefined) n.dataset.en = n.innerHTML;
+      n.innerHTML = LANG === 'ru' ? n.dataset.ru : n.dataset.en;
+    });
+    document.documentElement.lang = LANG;
+  }
+  var btn = document.getElementById('trestLang');
+  function sync() { if (btn) btn.textContent = LANG === 'ru' ? 'EN' : 'RU'; }
+  apply(); sync();
+  if (btn) btn.addEventListener('click', function () {
+    LANG = LANG === 'ru' ? 'en' : 'ru';
+    try { localStorage.setItem('trest-lang', LANG); } catch (e) {}
+    apply(); sync();
+  });
+})();
